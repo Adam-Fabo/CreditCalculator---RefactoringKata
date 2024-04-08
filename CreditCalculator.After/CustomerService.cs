@@ -9,29 +9,21 @@ public class CustomerService
         DateTime dateOfBirth,
         int companyId)
     {
-        if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
-        {
+        if (!IsNameValid(firstName, lastName))
             return false;
-        }
 
-        if (!email.Contains('@') && !email.Contains('.'))
-        {
+
+        if (!IsEmailValid(email))
             return false;
-        }
 
-        var now = DateTime.Now;
-        var age = now.Year - dateOfBirth.Year;
-        if (now.Month < dateOfBirth.Month ||
-            now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
-        {
-            age--;
-        }
-
-
-        if (age < 21)
-        {
+        if (!ValiDdateOfBirth(dateOfBirth))
             return false;
-        }
+
+        var age = CalculatetAge(dateOfBirth);
+        if (!LegalAge(age))
+            return false;
+
+
 
         var companyRepository = new CompanyRepository();
         var company = companyRepository.GetById(companyId);
@@ -88,4 +80,54 @@ public class CustomerService
 
         return true;
     }
+
+    public static bool IsNameValid(string firstName, string lastName)
+    {
+        if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public static bool IsEmailValid(string email)
+    {
+        if (!email.Contains('@') && !email.Contains('.'))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public static bool LegalAge(int age)
+    {
+        if (age < 21)
+        {
+            return false;
+        }
+        return true;
+
+    }
+
+    public static int CalculatetAge(DateTime dateOfBirth) 
+    {
+        var now = DateTime.Now;
+        var age = now.Year - dateOfBirth.Year;
+        if (now.Month < dateOfBirth.Month ||
+            now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
+        {
+            age--;
+        }
+        return age;
+
+    }
+
+    public static bool ValiDdateOfBirth(DateTime dateOfBirth) {
+        var now = DateTime.Now;
+        if (now < dateOfBirth)
+            return false;
+
+        return true;
+    }
+
 }

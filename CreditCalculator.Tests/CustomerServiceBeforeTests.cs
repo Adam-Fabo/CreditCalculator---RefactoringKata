@@ -1,4 +1,4 @@
-using CreditCalculator.Before;
+using CreditCalculator.After;
 using FluentAssertions;
 
 namespace CreditCalculator.Tests;
